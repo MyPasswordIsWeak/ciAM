@@ -196,14 +196,18 @@ int install_cia(char *path, int line)
 		return -1;
 	}
 
+	debug("Starting cia install with total install");
+	printf("\x1b[29;0HPercent: 0%% (0MiB/unk)");
+
 	do {
+
 		// So basically read file and then write to cia handle
 		FSFILE_Read(file, &read, offset, buffer, INSTALL_BUFFER_SIZE);
 		FSFILE_Write(cia, &written, offset, buffer, INSTALL_BUFFER_SIZE, FS_WRITE_FLUSH);
 		offset += read;
 
-		printf("\x1b[28;0Hoffset: %lu", offset);
-		printf("\x1b[29;0HPercent: %lli%%", (offset / title.size) * 100);
+		// idk whai this no worcc
+		printf("\x1b[29;0HPercent: %lli%% (%luMiB/%lliMiB)", (offset / size) * 100, offset / 1024 / 1024, size / 1024 / 1024);
 
 	}
 	while(offset < size);
