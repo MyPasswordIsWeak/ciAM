@@ -1,0 +1,78 @@
+#!/bin/sh
+
+# bs stands for build_script ;)
+
+BUILD_FILE="*.3dsx"
+PREV="citra"
+ADRESS=""
+
+function bs_credits() {
+	clear
+	echo
+	echo "Build script for 3ds shit by MyPasswordIsWeak"
+	echo
+}
+
+function bs_3dslink() {
+	echo Sending 3dsx to 3ds with 3dslink ...
+	3dslink -a "$ADRESS" $BUILD_FILE
+}
+
+function bs_make() {
+	echo Building application ...
+	make -j4
+}
+
+function bs_citra() {
+	echo Opening citra ...
+	citra-qt $BUILD_FILE > /dev/null 2> /dev/null
+}
+
+bs_credits
+
+echo "What is your 3ds its ip and port?"
+echo "Format: 192.168.x.x"
+echo "Example: 192.168.2.18"
+echo "Needed for 3dslink"
+echo "------------------------------------"
+read -p "| " ADRESS
+
+
+while [ true ]; do
+
+	bs_credits
+	echo "------------------------------------"
+	echo "Enter the following keys for the following actions"
+	echo "Default is now $PREV, and will be until you choose another"
+	echo "citra   -  Launch executable with citra"
+	echo "3dslink -  Send executable to 3ds with 3dslink"
+	echo "------------------------------------"
+	read ACTION
+	echo "------------------------------------"
+
+	if [[ "$ACTION" == "3dslink" ]]; then
+		bs_make && \
+			bs_3dslink
+	elif [[ "$ACTION" == "citra" ]]; then
+		bs_make && \
+			bs_citra
+	elif [[ "$PREV" == "citra" || "$PREV" == "3dslink" ]]; then
+		ACTION="$PREV"
+		if [[ "$ACTION" == "3dslink" ]]; then
+			bs_make && \
+				bs_3dslink
+		elif [[ "$ACTION" == "citra" ]]; then
+			bs_make && \
+				bs_citra
+		fi
+	fi
+
+	PREV="$ACTION"
+	make clean
+
+	echo "------------------------------------"
+	echo "Press any key to continue."
+	echo "------------------------------------"
+	read
+
+done
