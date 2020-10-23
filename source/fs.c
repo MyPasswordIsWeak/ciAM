@@ -121,7 +121,7 @@ int create_file_handle_read(char *path, Handle *handle)
 }
 
 // https://github.com/Universal-Team/Universal-Updater/blob/master/source/utils/cia.cpp#L67
-// Thanks dears <3
+// Thanks for showing how2install cias
 int install_cia(char *path, int line)
 {
 
@@ -130,7 +130,6 @@ int install_cia(char *path, int line)
 	FS_MediaType media = MEDIATYPE_SD;
 	AM_TitleEntry title;
 
-	// Handle cia;
 	Handle file;
 	Result res;
 
@@ -161,13 +160,66 @@ int install_cia(char *path, int line)
 			break;
 	}
 
+	// Real stuff starts here
+	media = getTitleDestination(title.titleID);
+
+	// For you Timm, since you hate commas
+	u32 writte;
+	u32 read;
+
+	u32 installed = 0;
+	u32 offset = 0;
+	Handle cia;
+
+	res = AM_StartCiaInstall(media, &cia);
+
+	if (R_FAILED(res)) {
+		print_error("Failed initializing cia installation", res);
+		pause_3ds();
+		return -1;
+	}
+
+	// INSTALL_BUFFER_SIZE --> libs.h
+	u8 *buffer = malloc(INSTALL_BUFFER_SIZE);
+	// i dont think this should happen
+	if(buffer == NULL) {
+		// = 000-1011 (Out of memory)
+		print_error("Failed allocating memory", 0xD8C3FBF3);
+		pause_3ds();
+		return -1;
+	}
+
+	do {
+		// So basically read file and then write to cia handle
+		FSFILE_Read(file, &read, offset, buf, INSTALL_BUFFER_SIZE);
+		FSFILE_Write(cia, &written, offset, buf, INSTALL_BUFFER_SIZE, FS_WRITE_FLUSH);
+		offset += read;
+	}
+	while(offset < title.size);
+	free(buffer);
+
+	res = AM_FinishCiaInstall(cia);
+	if (R_FAILED(res)) {
+		print_error("Failed finishing the cia install", res);
+		pause_3ds();
+		return -1;
+	}
+
+	res = FSFILE_Close(file);
+	if (R_FAILED(res)) {
+		print_error("Failed closing file handle", res);
+		pause_3ds();
+		return -1;
+	}
+
 	return 0;
 
 }
 
 // https://github.com/Universal-Team/Universal-Updater/blob/master/source/utils/cia.cpp#L55
 // Fucking bitwise
-FS_MediaType getTitleDestination(u64 titleId) {
+FS_MediaType getTitleDestination(u64 titleId)
+{
 
 	u16 platform = (u16) ((titleId >> 48) & 0xFFFF);
 	u16 category = (u16) ((titleId >> 32) & 0xFFFF);
