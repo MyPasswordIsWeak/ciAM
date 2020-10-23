@@ -54,6 +54,29 @@ int main(int argc, char* argv[])
 			redraw_selected(line, selected);
 		}
 
+		else if(kDown & KEY_A && kDown & KEY_R) {
+
+			DIR *items;
+			int res = read_directory(CIA_DIR, &items);
+
+			if(res != -1) {
+				while((item = readdir(items))) {
+
+					char current[128 + sizeof(CIA_DIR)] = CIA_DIR;
+					strcat(current, item->d_name);
+
+					debug(format("Installing file: %s", selectedFileAbs));
+
+					install_cia(selectedFileAbs, line);
+					clean_screen();
+					redraw_selected(line, selected);
+
+				}
+			} else {
+				formatted_print(format("Couldn't open directory (%s)", directory), 0, 29);
+			}
+		}
+
 		else if(kDown & KEY_A && selected != 0) {
 
 			char selectedFileRel[128] = "";
@@ -69,6 +92,8 @@ int main(int argc, char* argv[])
 			redraw_selected(line, selected);
 
 		}
+
+		else if(kDown & KEY_)
 
 	}
 

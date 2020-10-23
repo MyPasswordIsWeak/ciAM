@@ -1,4 +1,5 @@
 
+build/
 *.smdh
 *.3dsx
 *.elf

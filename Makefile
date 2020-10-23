@@ -43,8 +43,8 @@ GFXBUILD	:=	$(BUILD)
 
 # App options
 APP_TITLE	:=	Installer
-APP_DESCRIPTION	:=	A non-depricated cia installer
-APP_AUTHOR	:=	MyPasswordIsWeak & contributers
+APP_DESCRIPTION	:=	A minimalist cia installer
+APP_AUTHOR	:=	MyPasswordIsWeak
 
 #---------------------------------------------------------------------------------
 # options for code generation
