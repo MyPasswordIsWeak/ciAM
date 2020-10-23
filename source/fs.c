@@ -212,6 +212,9 @@ int install_cia(char *path, int line)
 		return -1;
 	}
 
+	formatted_print("Finished installation of cia", 0, 29);
+	pause_3ds();
+
 	return 0;
 
 }
