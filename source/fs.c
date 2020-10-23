@@ -159,6 +159,7 @@ int install_cia(char *path, int line)
 		else if(kDown & KEY_A)
 			break;
 	}
+	formatted_print("                                           ", 4, 26);
 
 	// Real stuff starts here
 	media = getTitleDestination(title.titleID);
@@ -202,10 +203,10 @@ int install_cia(char *path, int line)
 		offset += read;
 
 		printf("\x1b[28;0Hoffset: %lu", offset);
-		printf("\x1b[28;0Hoffset: %lli%%", (offset / title.size) * 100);
+		printf("\x1b[29;0HPercent: %lli%%", (offset / title.size) * 100);
 
 	}
-	while(offset < title.size);
+	while(offset < size);
 	free(buffer);
 
 	res = AM_FinishCiaInstall(cia);

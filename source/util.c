@@ -81,3 +81,9 @@ void print_usage(void)
 	formatted_print("[U] Select cia", 0, 7);
 
 }
+
+// This can probably be done better, idc
+void remove_pause(void)
+{
+	formatted_print("                                    ", 7, 26);
+}
