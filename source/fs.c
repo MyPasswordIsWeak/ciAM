@@ -122,7 +122,7 @@ int create_file_handle_read(char *path, Handle *handle)
 
 // https://github.com/Universal-Team/Universal-Updater/blob/master/source/utils/cia.cpp#L67
 // Thanks for showing how2install cias
-int install_cia(char *path, int line)
+int install_cia(char *path, int line, u8 ask)
 {
 
 	line = line + 2;
@@ -150,16 +150,18 @@ int install_cia(char *path, int line)
 	printf("\x1b[%i;0HVersion: %i", line + 1, title.version);
 	printf("\x1b[%i;0HSize: %lluMiB", line + 2, title.size / 1024 / 1024);
 
-	formatted_print("Press [B] to cancel or [A] to continue ...", 4, 26);
-	while(aptMainLoop()) {
-		hidScanInput();
-		u32 kDown = hidKeysDown();
-		if(kDown & KEY_B)
-			return 0;
-		else if(kDown & KEY_A)
-			break;
+	if(ask == 1) {
+		formatted_print("Press [B] to cancel or [A] to continue ...", 4, 26);
+		while(aptMainLoop()) {
+			hidScanInput();
+			u32 kDown = hidKeysDown();
+			if(kDown & KEY_B)
+				return 0;
+			else if(kDown & KEY_A)
+				break;
+		}
+		formatted_print("                                           ", 4, 26);
 	}
-	formatted_print("                                           ", 4, 26);
 
 	// Real stuff starts here
 	media = getTitleDestination(title.titleID);

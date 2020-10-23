@@ -44,19 +44,20 @@ int main(int argc, char* argv[])
 		if(EXIT_KEYS)
 			break;
 
-		if(kDown & KEY_DDOWN && selected < total) {
+		if(kDown & KEY_DOWN && selected < total) {
 			++selected;
 			redraw_selected(line, selected);
 		}
 
-		else if(kDown & KEY_DUP && selected > 1) {
+		else if(kDown & KEY_UP && selected > 1) {
 			--selected;
 			redraw_selected(line, selected);
 		}
 
-		else if(kDown & KEY_A && kDown & KEY_R) {
+		else if((kDown & KEY_R && kDown & KEY_A)) {
 
 			DIR *items;
+			struct dirent *item;
 			int res = read_directory(CIA_DIR, &items);
 
 			if(res != -1) {
@@ -65,15 +66,16 @@ int main(int argc, char* argv[])
 					char current[128 + sizeof(CIA_DIR)] = CIA_DIR;
 					strcat(current, item->d_name);
 
-					debug(format("Installing file: %s", selectedFileAbs));
+					debug(format("Installing file: %s", current));
 
-					install_cia(selectedFileAbs, line);
+					install_cia(current, line, 0);
 					clean_screen();
 					redraw_selected(line, selected);
 
 				}
+				free(items);
 			} else {
-				formatted_print(format("Couldn't open directory (%s)", directory), 0, 29);
+				formatted_print(format("Couldn't open directory (%s)", CIA_DIR), 0, 29);
 			}
 		}
 
@@ -87,13 +89,11 @@ int main(int argc, char* argv[])
 
 			debug(format("Installing file: %s", selectedFileAbs));
 
-			install_cia(selectedFileAbs, line);
+			install_cia(selectedFileAbs, line, 1);
 			clean_screen();
 			redraw_selected(line, selected);
 
 		}
-
-		else if(kDown & KEY_)
 
 	}
 
