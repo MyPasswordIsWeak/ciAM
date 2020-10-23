@@ -19,8 +19,9 @@
 // If you want you can change this
 #define EXIT_KEYS (kDown & KEY_START || kDown & KEY_B)
 #define INSTALL_BUFFER_SIZE 0x200000
-#define DEBUG_FILE "ciAM_debug.log"
-#define VERSION "1.0.0"
+#define DEBUG_FILE "/ciAM_debug.log"
+#define VERSION "v1.0.0"
 #define CIA_DIR "/cias/"
+#define WANTS_DEBUG true
 
 #endif

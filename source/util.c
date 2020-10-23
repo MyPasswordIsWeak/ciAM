@@ -35,12 +35,14 @@ void pause_3ds(void)
 
 void debug(char *message)
 {
-	
-	FILE *fd = fopen(DEBUG_FILE, "a");
+	// WANTS_DEBUG --> libs.h
+	if(WANTS_DEBUG) {
 
-	fprintf(fd, "debug: %s\n", message);
-	fclose(fd);
+		FILE *fd = fopen(DEBUG_FILE, "a");
 
+		fprintf(fd, "debug: %s\n", message);
+		fclose(fd);
+	}
 }
 
 void move_cursor(int x, int y)
