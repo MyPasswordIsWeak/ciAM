@@ -1,8 +1,8 @@
 
 # ciAM
 
-cia Application Manager, well more like installer for now
-a combination of the AM (application module) module and cia
+cia Application Manager, well more like installer for now  
+a combination of the AM (application module) module and cia  
 
 # Controlls
 
