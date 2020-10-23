@@ -164,18 +164,24 @@ int install_cia(char *path, int line)
 	media = getTitleDestination(title.titleID);
 
 	// For you Timm, since you hate commas
-	u32 writte;
+	u32 written;
 	u32 read;
 
-	u32 installed = 0;
 	u32 offset = 0;
+	u64 size = 0;
 	Handle cia;
 
 	res = AM_StartCiaInstall(media, &cia);
 
 	if (R_FAILED(res)) {
-		print_error("Failed initializing cia installation", res);
+		print_error("Failed to get filesize", res);
 		pause_3ds();
+		return -1;
+	}
+
+	res = FSFILE_GetSize(file, &size);
+	if (R_FAILED(res)) {
+		printf("Error in:\nFSFILE_GetSize\n");
 		return -1;
 	}
 
@@ -191,9 +197,13 @@ int install_cia(char *path, int line)
 
 	do {
 		// So basically read file and then write to cia handle
-		FSFILE_Read(file, &read, offset, buf, INSTALL_BUFFER_SIZE);
-		FSFILE_Write(cia, &written, offset, buf, INSTALL_BUFFER_SIZE, FS_WRITE_FLUSH);
+		FSFILE_Read(file, &read, offset, buffer, INSTALL_BUFFER_SIZE);
+		FSFILE_Write(cia, &written, offset, buffer, INSTALL_BUFFER_SIZE, FS_WRITE_FLUSH);
 		offset += read;
+
+		printf("\x1b[28;0Hoffset: %lu", offset);
+		printf("\x1b[28;0Hoffset: %lli%%", (offset / title.size) * 100);
+
 	}
 	while(offset < title.size);
 	free(buffer);
