@@ -73,8 +73,6 @@ int main(int argc, char* argv[])
 				redraw_selected(line, selected);
 
 			}
-
-			rewinddir(cias);
 		}
 
 		else if(kDown & KEY_A && selected != 0) {
