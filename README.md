@@ -28,4 +28,4 @@ You might want to change a few values in include/libs.h:
 |DEBUG_FILE|The file to debug to, if you turned off WANTS_DEBUG, this does nothing, else its the log file location, / is the root of the sd|
 |VERSION|The version, this will change the number shown in the start menu|
 |CIA_DIR|The folder to look for cias in, / is the root just like DEBUG_FILE|
-|WANTS_DEBUG|Either true or false, whether or not you want to create a debug file|
+|WANTS_DEBUG|Comment this out if you don't want to create log files (// to comment)|

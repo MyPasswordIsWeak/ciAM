@@ -62,9 +62,8 @@ int main(int argc, char* argv[])
 
 			while((item = readdir(cias))) {
 
-				char *filePath = malloc((sizeof(char) * 128)  + sizeof(char) * sizeof(CIA_DIR));
+				char filePath[(sizeof(char) * 128)  + (sizeof(char) * sizeof(CIA_DIR))] = CIA_DIR;
 
-				strcat(filePath, CIA_DIR);
 				strcat(filePath, item->d_name);
 				debug(format("Installing file: %s", filePath));
 
@@ -78,14 +77,12 @@ int main(int argc, char* argv[])
 
 		else if(kDown & KEY_A && selected != 0) {
 
-			char *filePath = malloc((sizeof(char) * 128)  + sizeof(char) * sizeof(CIA_DIR));
+			char filePath[(sizeof(char) * 128)  + sizeof(char) * sizeof(CIA_DIR)] = CIA_DIR;
 
-			strcat(filePath, CIA_DIR);
 			strcat(filePath, get_item_in_dir(CIA_DIR, selected - 1));
 			debug(format("Installing file: %s", filePath));
 
 			install_cia(filePath, line, 1);
-			free(filePath);
 			clean_screen();
 			redraw_selected(line, selected);
 
