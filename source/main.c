@@ -74,7 +74,6 @@ int main(int argc, char* argv[])
 
 			}
 			closedir(cias);
-			free(cias);
 		}
 
 		else if(kDown & KEY_A && selected != 0) {
