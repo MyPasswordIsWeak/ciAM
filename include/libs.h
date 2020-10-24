@@ -8,9 +8,10 @@
 #ifndef __LIBS_H__
 #define __LIBS_H__
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+#include <math.h>
 #include <3ds.h>
 
 #include "util.h"
@@ -22,6 +23,6 @@
 #define DEBUG_FILE "/ciAM_debug.log"
 #define VERSION "v1.0.0"
 #define CIA_DIR "/cias/"
-// #define WANTS_DEBUG
+#define WANTS_DEBUG
 
 #endif

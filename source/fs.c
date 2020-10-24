@@ -108,7 +108,7 @@ int install_cia(char *path, int line, u8 ask)
 	// lu = u32, 016llx = 16 length hex (thanks Timm)
 	printf("\x1b[%i;0HTitle ID: %016llx", line, title.titleID);
 	printf("\x1b[%i;0HVersion: %i", line + 1, title.version);
-	printf("\x1b[%i;0HSize: %lluMiB", line + 2, title.size / 1024 / 1024);
+	printf("\x1b[%i;0HSize: %fMiB", line + 2, title.size / pow(1024, 2));
 
 	if(ask == 1) {
 		formatted_print("Press [B] to cancel or [A] to continue ...", 4, 26);
@@ -144,7 +144,9 @@ int install_cia(char *path, int line, u8 ask)
 
 	res = FSFILE_GetSize(file, &size);
 	if (R_FAILED(res)) {
-		printf("Error in:\nFSFILE_GetSize\n");
+		print_error("Failed getting size of file", res);
+		pause_3ds();
+		return -1;
 		return -1;
 	}
 
@@ -168,8 +170,8 @@ int install_cia(char *path, int line, u8 ask)
 		FSFILE_Write(cia, &written, offset, buffer, INSTALL_BUFFER_SIZE, FS_WRITE_FLUSH);
 		offset += read;
 
-		// idk whai this no worcc
-		printf("\x1b[29;0HPercent: %llu%% (%lluMiB/%lluMiB)", (offset / size) * 100, offset / 1024 / 1024, size / 1024 / 1024);
+		// idk whai this worcc
+		printf("\x1b[29;0HInstalling: %.2f%% (%f/%f)", ((float)offset / size * 100), offset / pow(1024, 2), size / pow(1024, 2));
 
 	}
 	while(offset < size);
