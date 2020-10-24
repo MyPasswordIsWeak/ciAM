@@ -157,7 +157,7 @@ int install_cia(char *path, int line, u8 ask)
 	u8 *buffer = malloc(INSTALL_BUFFER_SIZE);
 	// i dont think this should happen
 	if(buffer == NULL) {
-		// = 000-1011 (Out of memory)
+		// 0xD8C3FBF3 = 000-1011 = Out of memory
 		print_error("Failed allocating memory", 0xD8C3FBF3);
 		pause_3ds();
 		return -1;
@@ -194,7 +194,6 @@ int install_cia(char *path, int line, u8 ask)
 		return -1;
 	}
 
-	formatted_print("Finished installation of cia", 0, 29);
 	formatted_print("Finished installation of cia", 0, 29);
 	pause_3ds();
 

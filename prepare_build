@@ -46,7 +46,7 @@ while [ true ]; do
 	echo "Default is now $PREV, and will be until you choose another"
 	echo "citra   -  Launch executable with citra"
 	echo "3dslink -  Send executable to 3ds with 3dslink"
-	echo "make	  -  Just builds the program and cleans after"
+	echo "make    -  Just builds the program and cleans after"
 	echo "------------------------------------"
 	read ACTION
 	echo "------------------------------------"
