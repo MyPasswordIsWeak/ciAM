@@ -32,6 +32,7 @@ int list_diritems(DIR *directory)
 
 	}
 
+	rewinddir(directory);
 	return count - 1;
 
 }
@@ -49,6 +50,7 @@ char *get_item_in_dir(DIR *directory, int number)
 		++count;
 	}
 
+	rewinddir(directory);
 	return ret;
 
 }
@@ -108,7 +110,7 @@ int install_cia(char *path, int line, u8 ask)
 	// lu = u32, 016llx = 16 length hex (thanks Timm)
 	printf("\x1b[%i;0HTitle ID: %016llx", line, title.titleID);
 	printf("\x1b[%i;0HVersion: %i", line + 1, title.version);
-	printf("\x1b[%i;0HSize: %fMiB", line + 2, title.size / pow(1024, 2));
+	printf("\x1b[%i;0HSize: %lluMiB", line + 2, title.size / (u64)pow(1024, 2));
 
 	if(ask == 1) {
 		formatted_print("Press [B] to cancel or [A] to continue ...", 4, 26);
@@ -170,7 +172,7 @@ int install_cia(char *path, int line, u8 ask)
 		offset += read;
 
 		// idk whai this worcc
-		printf("\x1b[29;0HInstalling: %.2f%% (%f/%f)", ((float)offset / size * 100), offset / pow(1024, 2), size / pow(1024, 2));
+		printf("\x1b[29;0HInstalling: %.2f%% (%lluMiB/%lluMiB)", ((float)offset / size * 100), offset / (u64)pow(1024, 2), size / (u64)pow(1024, 2));
 
 	}
 	while(offset < size);
