@@ -61,12 +61,12 @@ void print_error(char *message, long unsigned int error)
 	printf("\x1b[29;0H%08lX\n", error);
 }
 
-void clean_screen(DIR *directory)
+void clean_screen(void)
 {
 	consoleClear();
 	move_cursor(0, 0);
 	print_usage();
-	list_diritems(directory);
+	list_diritems(CIA_DIR);
 	debug("Cleaned screen");
 }
 

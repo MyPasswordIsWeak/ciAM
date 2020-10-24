@@ -18,13 +18,14 @@
  * -1 - failed
  *  * - Amount of files in directory
  */
-int list_diritems(DIR *directory)
+int list_diritems(char *directory)
 {
 
+	DIR *items = opendir(directory);
     struct dirent *item;
     int count = 1;
 
-	while((item = readdir(directory))) {
+	while((item = readdir(items))) {
 
 		/* COUNT) FILENAME */
 		printf("\x1b[%i;0H%i) %s", count + 8, count, item->d_name);
@@ -32,23 +33,29 @@ int list_diritems(DIR *directory)
 
 	}
 
+	closedir(items);
+	free(items);
+	printf("\n");
 	return count - 1;
 
 }
 
-char *get_item_in_dir(DIR *directory, int number)
+char *get_item_in_dir(char *directory, int number)
 {
 
 	char *ret = malloc(sizeof(char) * 128);
+	DIR *items = opendir(directory);
     struct dirent *item;
-	int count = 0;
+    int count = 0;
 
-	while((item = readdir(directory))) {
+	while((item = readdir(items))) {
 		if(count == number)
 			strcpy(ret, item->d_name);
 		++count;
 	}
 
+	closedir(items);
+	free(items);
 	return ret;
 
 }

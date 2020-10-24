@@ -11,14 +11,13 @@ int main(int argc, char* argv[])
 {
 
 	int loopControl = init_services();
-	DIR *cias = opendir(CIA_DIR);
 
 	if(loopControl == -1)
 		return -1;
 
 	print_usage();
 
-	int total = list_diritems(cias);
+	int total = list_diritems(CIA_DIR);
 	// = total + (Usage + offset)
 	int line = total + 10;
 	int selected = 0;
@@ -58,6 +57,7 @@ int main(int argc, char* argv[])
 		else if((kDown & KEY_R) && (kDown & KEY_A)) {
 
 			formatted_print(format("Installing all files from %s", CIA_DIR), 0, 29);
+			DIR *cias = opendir(CIA_DIR);
 			struct dirent *item;
 
 			while((item = readdir(cias))) {
@@ -69,10 +69,12 @@ int main(int argc, char* argv[])
 				debug(format("Installing file: %s", filePath));
 
 				install_cia(filePath, line, 0);
-				clean_screen(cias);
+				clean_screen();
 				redraw_selected(line, selected);
 
 			}
+			closedir(cias);
+			free(cias);
 		}
 
 		else if(kDown & KEY_A && selected != 0) {
@@ -80,12 +82,12 @@ int main(int argc, char* argv[])
 			char *filePath = malloc((sizeof(char) * 128)  + sizeof(char) * sizeof(CIA_DIR));
 
 			strcat(filePath, CIA_DIR);
-			strcat(filePath, get_item_in_dir(cias, selected - 1));
+			strcat(filePath, get_item_in_dir(CIA_DIR, selected - 1));
 			debug(format("Installing file: %s", filePath));
 
 			install_cia(filePath, line, 1);
 			free(filePath);
-			clean_screen(cias);
+			clean_screen();
 			redraw_selected(line, selected);
 
 		}
