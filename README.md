@@ -1,8 +1,8 @@
 
-# ciAM
+# CiAM
 
-cia application manager (ciAM) - A minimalist cia installer for the 3ds  
-a combination of the AM (application module) module and cia  
+Cia Application Manager (CiAM) - A minimalist cia installer for the 3ds  
+a combination of the AM (application module) module and cia (ctr importable archive)  
 
 # Controls
 

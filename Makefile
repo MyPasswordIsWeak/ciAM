@@ -38,14 +38,11 @@ DATA		:=	data
 INCLUDES	:=	include
 GRAPHICS	:=	gfx
 GFXBUILD	:=	$(BUILD)
-#ROMFS		:=	romfs
-#GFXBUILD	:=	$(ROMFS)/gfx
 
 # App options
-APP_TITLE	:=	Installer
+APP_TITLE	:=	CiAM
 APP_DESCRIPTION	:=	A minimalist cia installer
 APP_AUTHOR	:=	MyPasswordIsWeak
-
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
