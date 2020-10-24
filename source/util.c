@@ -36,13 +36,12 @@ void pause_3ds(void)
 void debug(char *message)
 {
 	// WANTS_DEBUG --> libs.h
-	if(WANTS_DEBUG) {
+	#ifdef WANTS_DEBUG
+	FILE *fd = fopen(DEBUG_FILE, "a");
 
-		FILE *fd = fopen(DEBUG_FILE, "a");
-
-		fprintf(fd, "debug: %s\n", message);
-		fclose(fd);
-	}
+	fprintf(fd, "debug: %s\n", message);
+	fclose(fd);
+	#endif
 }
 
 void move_cursor(int x, int y)
@@ -62,12 +61,12 @@ void print_error(char *message, long unsigned int error)
 	printf("\x1b[29;0H%08lX\n", error);
 }
 
-void clean_screen(void)
+void clean_screen(DIR *directory)
 {
 	consoleClear();
 	move_cursor(0, 0);
 	print_usage();
-	list_diritems(CIA_DIR);
+	list_diritems(directory);
 	debug("Cleaned screen");
 }
 

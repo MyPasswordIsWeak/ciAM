@@ -11,13 +11,14 @@ int main(int argc, char* argv[])
 {
 
 	int loopControl = init_services();
+	DIR *cias = opendir(CIA_DIR);
 
 	if(loopControl == -1)
 		return -1;
 
 	print_usage();
 
-	int total = list_diritems(CIA_DIR);
+	int total = list_diritems(cias);
 	// = total + (Usage + offset)
 	int line = total + 10;
 	int selected = 0;
@@ -54,43 +55,37 @@ int main(int argc, char* argv[])
 			redraw_selected(line, selected);
 		}
 
-		else if((kDown & KEY_R && kDown & KEY_A)) {
+		else if((kDown & KEY_R) && (kDown & KEY_A)) {
 
-			DIR *items;
+			formatted_print(format("Installing all files from %s", CIA_DIR), 0, 29);
 			struct dirent *item;
-			int res = read_directory(CIA_DIR, &items);
 
-			if(res != -1) {
-				while((item = readdir(items))) {
+			while((item = readdir(cias))) {
 
-					char current[128 + sizeof(CIA_DIR)] = CIA_DIR;
-					strcat(current, item->d_name);
+				char *filePath = malloc((sizeof(char) * 128)  + sizeof(char) * sizeof(CIA_DIR));
 
-					debug(format("Installing file: %s", current));
+				strcat(filePath, CIA_DIR);
+				strcat(filePath, item->d_name);
+				debug(format("Installing file: %s", filePath));
 
-					install_cia(current, line, 0);
-					clean_screen();
-					redraw_selected(line, selected);
+				install_cia(filePath, line, 0);
+				clean_screen(cias);
+				redraw_selected(line, selected);
 
-				}
-				free(items);
-			} else {
-				formatted_print(format("Couldn't open directory (%s)", CIA_DIR), 0, 29);
 			}
 		}
 
 		else if(kDown & KEY_A && selected != 0) {
 
-			char selectedFileRel[128] = "";
-			char selectedFileAbs[128 + sizeof(CIA_DIR)] = CIA_DIR;
+			char *filePath = malloc((sizeof(char) * 128)  + sizeof(char) * sizeof(CIA_DIR));
 
-			strcpy(selectedFileRel, get_item_in_dir(CIA_DIR, selected - 1));
-			strcat(selectedFileAbs, selectedFileRel);
+			strcat(filePath, CIA_DIR);
+			strcat(filePath, get_item_in_dir(cias, selected - 1));
+			debug(format("Installing file: %s", filePath));
 
-			debug(format("Installing file: %s", selectedFileAbs));
-
-			install_cia(selectedFileAbs, line, 1);
-			clean_screen();
+			install_cia(filePath, line, 1);
+			free(filePath);
+			clean_screen(cias);
 			redraw_selected(line, selected);
 
 		}

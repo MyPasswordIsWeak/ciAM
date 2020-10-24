@@ -46,6 +46,7 @@ while [ true ]; do
 	echo "Default is now $PREV, and will be until you choose another"
 	echo "citra   -  Launch executable with citra"
 	echo "3dslink -  Send executable to 3ds with 3dslink"
+	echo "make	  -  Just builds the program and cleans after"
 	echo "------------------------------------"
 	read ACTION
 	echo "------------------------------------"
@@ -56,7 +57,9 @@ while [ true ]; do
 	elif [[ "$ACTION" == "citra" ]]; then
 		bs_make && \
 			bs_citra
-	elif [[ "$PREV" == "citra" || "$PREV" == "3dslink" ]]; then
+	elif [[ "$ACTION" == "make" ]]; then
+		bs_make
+	elif [[ "$PREV" == "citra" || "$PREV" == "3dslink" || "$PREV" == "make" ]]; then
 		ACTION="$PREV"
 		if [[ "$ACTION" == "3dslink" ]]; then
 			bs_make && \
@@ -64,6 +67,8 @@ while [ true ]; do
 		elif [[ "$ACTION" == "citra" ]]; then
 			bs_make && \
 				bs_citra
+		elif [[ "$ACTION" == "make" ]]; then
+			bs_make
 		fi
 	fi
 

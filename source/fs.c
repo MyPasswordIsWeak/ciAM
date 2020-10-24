@@ -9,27 +9,6 @@
 #include "fs.h"
 
 /*
- * Params:
- *	directory	- The directory to read
- *  *&targetDir	- An array to read into
- * Returns:
- *  1 - success
- * -1 - failed
-*/
-int read_directory(char *directory, DIR **targetDir)
-{
-
-	// Open directory
-	*targetDir = opendir(directory);
-
-	if(targetDir == NULL)
-		return -1;
-
-	return 0;
-
-}
-
-/*
  * Example res:
  *  1) SomeFile.cia
  *	2) SomeSecondFile.cia
@@ -39,21 +18,13 @@ int read_directory(char *directory, DIR **targetDir)
  * -1 - failed
  *  * - Amount of files in directory
  */
-int list_diritems(char *directory)
+int list_diritems(DIR *directory)
 {
-
-	DIR *items;
-	int res = read_directory(directory, &items);
-
-	if(res == -1) {
-		formatted_print(format("Couldn't open directory (%s)", directory), 0, 29);
-		return -1;
-	}
 
     struct dirent *item;
     int count = 1;
 
-	while((item = readdir(items))) {
+	while((item = readdir(directory))) {
 
 		/* COUNT) FILENAME */
 		printf("\x1b[%i;0H%i) %s", count + 8, count, item->d_name);
@@ -61,34 +32,23 @@ int list_diritems(char *directory)
 
 	}
 
-	free(items);
-	printf("\n");
 	return count - 1;
 
 }
 
-char *get_item_in_dir(char *directory, int number)
+char *get_item_in_dir(DIR *directory, int number)
 {
-
-	DIR *items;
-	int res = read_directory(directory, &items);
-
-	if(res == -1) {
-		formatted_print(format("Couldn't open directory (%s)", directory), 0, 29);
-		return "";
-	}
 
 	char *ret = malloc(sizeof(char) * 128);
     struct dirent *item;
-    int count = 0;
+	int count = 0;
 
-	while((item = readdir(items))) {
+	while((item = readdir(directory))) {
 		if(count == number)
 			strcpy(ret, item->d_name);
 		++count;
 	}
 
-	free(items);
 	return ret;
 
 }
@@ -170,7 +130,7 @@ int install_cia(char *path, int line, u8 ask)
 	u32 written;
 	u32 read;
 
-	u32 offset = 0;
+	u64 offset = 0;
 	u64 size = 0;
 	Handle cia;
 
@@ -209,7 +169,7 @@ int install_cia(char *path, int line, u8 ask)
 		offset += read;
 
 		// idk whai this no worcc
-		printf("\x1b[29;0HPercent: %lli%% (%luMiB/%lliMiB)", (offset / size) * 100, offset / 1024 / 1024, size / 1024 / 1024);
+		printf("\x1b[29;0HPercent: %llu%% (%lluMiB/%lluMiB)", (offset / size) * 100, offset / 1024 / 1024, size / 1024 / 1024);
 
 	}
 	while(offset < size);

@@ -22,6 +22,6 @@
 #define DEBUG_FILE "/ciAM_debug.log"
 #define VERSION "v1.0.0"
 #define CIA_DIR "/cias/"
-#define WANTS_DEBUG true
+// #define WANTS_DEBUG
 
 #endif

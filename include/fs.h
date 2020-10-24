@@ -10,10 +10,9 @@
 
 #include <dirent.h>
 
-int read_directory(char *directory, DIR **targetDir);
-char *get_item_in_dir(char *directory, int number);
+char *get_item_in_dir(DIR *directory, int number);
 FS_MediaType getTitleDestination(u64 titleId);
 int install_cia(char *path, int line, u8 ask);
-int list_diritems(char *directory);
+int list_diritems(DIR *directory);
 
 #endif
