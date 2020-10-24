@@ -147,7 +147,6 @@ int install_cia(char *path, int line, u8 ask)
 		print_error("Failed getting size of file", res);
 		pause_3ds();
 		return -1;
-		return -1;
 	}
 
 	// INSTALL_BUFFER_SIZE --> libs.h
