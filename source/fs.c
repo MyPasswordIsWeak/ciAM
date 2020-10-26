@@ -41,19 +41,18 @@ int list_diritems(char *directory)
 char *get_item_in_dir(char *directory, int number)
 {
 
-	char *ret = malloc(sizeof(char) * 128);
 	DIR *items = opendir(directory);
     struct dirent *item;
     int count = 0;
 
 	while((item = readdir(items))) {
 		if(count == number)
-			strcpy(ret, item->d_name);
+			break;
 		++count;
 	}
 
 	closedir(items);
-	return ret;
+	return item->d_name;
 
 }
 
@@ -138,17 +137,16 @@ int install_cia(char *path, int line, u8 ask)
 	u64 size = 0;
 	Handle cia;
 
-	res = AM_StartCiaInstall(media, &cia);
-
-	if (R_FAILED(res)) {
-		print_error("Failed to get filesize", res);
+	res = FSFILE_GetSize(file, &size);
+	if(R_FAILED(res)) {
+		print_error("Failed getting size of file", res);
 		pause_3ds();
 		return -1;
 	}
 
-	res = FSFILE_GetSize(file, &size);
-	if (R_FAILED(res)) {
-		print_error("Failed getting size of file", res);
+	res = AM_StartCiaInstall(media, &cia);
+	if(R_FAILED(res)) {
+		print_error("Failed to start installing cia", res);
 		pause_3ds();
 		return -1;
 	}
@@ -181,14 +179,14 @@ int install_cia(char *path, int line, u8 ask)
 	free(buffer);
 
 	res = AM_FinishCiaInstall(cia);
-	if (R_FAILED(res)) {
+	if(R_FAILED(res)) {
 		print_error("Failed finishing the cia install", res);
 		pause_3ds();
 		return -1;
 	}
 
 	res = FSFILE_Close(file);
-	if (R_FAILED(res)) {
+	if(R_FAILED(res)) {
 		print_error("Failed closing file handle", res);
 		pause_3ds();
 		return -1;
