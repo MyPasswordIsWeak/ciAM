@@ -8,9 +8,6 @@
 #ifndef __MAIN_H__
 #define __MAIN_H__
 
-#include "libs.h"
-#include "fs.h"
-
 void draw_arrow(int choice, int previous);
 void return_to_navigator(void);
 void print_functions(void);

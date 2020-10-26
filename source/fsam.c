@@ -2,11 +2,11 @@
 /*
  * Author: MyPasswordIsWeak
  * License: MIT
- * Purpose: All FS related shenanigance, now including cia installation, so also AM
+ * Purpose: All FS and AM related shenanigance
  */
 
 #include "libs.h"
-#include "fs.h"
+#include "fsam.h"
 
 
 int list_diritems(char *directory)

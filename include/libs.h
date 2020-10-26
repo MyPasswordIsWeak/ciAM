@@ -16,13 +16,13 @@
 
 #include "actions.h"
 #include "util.h"
-#include "fs.h"
+#include "fsam.h"
 
 // If you want you can change this
 #define EXIT_KEYS (kDown & KEY_START || kDown & KEY_B)
 #define INSTALL_BUFFER_SIZE 0x200000
 #define DEBUG_FILE "/CiAM_debug.log"
-#define AUTOBOOT installer_menu
+#define AUTOBOOT uninstaller_menu
 #define VERSION "v1.0.0"
 #define CIA_DIR "/cias/"
 #define WANTS_DEBUG

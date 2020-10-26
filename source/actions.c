@@ -66,11 +66,6 @@ int installer_menu(void)
 	return 0;
 }
 
-int uninstaller_menu(void)
-{
-	return 0;
-}
-
 int batch_installer_menu(void)
 {
 
@@ -91,5 +86,37 @@ int batch_installer_menu(void)
 
 	// }
 	// closedir(cias);
+	return 0;
+}
+
+int uninstaller_menu(void)
+{
+	u32 titlesReadCount;
+	u32 tidcount;
+	Result res;
+
+	res = AM_GetTitleCount(MEDIATYPE_SD, &tidcount);
+	
+	if(R_FAILED(res)) {
+		print_error("Failed getting total titles count", res);
+		pause_3ds();
+		return 0;
+	}
+
+	u64 *tids = calloc(tidcount, sizeof(u64));
+	res = AM_GetTitleList(&titlesReadCount, MEDIATYPE_SD, titlesReadCount, tids);
+
+	if(R_FAILED(res)) {
+		print_error("Failed titles", res);
+		pause_3ds();
+		return 0;
+	}
+
+	printf("Read %lu titles\n", titlesReadCount);
+	for(int i = 0; i < tidcount; ++i)
+		printf("tids[%i]: %016llX\n", i, tids[i]);
+
+	while(true);
+
 	return 0;
 }

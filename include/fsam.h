@@ -2,7 +2,7 @@
 /*
  * Author: MyPasswordIsWeak
  * License: MIT
- * Purpose: Header for fs.c
+ * Purpose: Header for fsam.c
  */
 
 #ifndef __FS_H__

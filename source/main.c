@@ -55,6 +55,8 @@ int main(int argc, char* argv[])
 					return_to_navigator();
 					break;
 				case 1:
+					loop = uninstaller_menu();
+					return_to_navigator();
 					break;
 			}
 		}
