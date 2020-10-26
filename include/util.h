@@ -9,6 +9,7 @@
 #define __UTIL_H__
 
 #include <dirent.h>
+#include "libs.h"
 
 char *format(char *base, const void *appendum);
 void formatted_print(char *text, int x, int y);

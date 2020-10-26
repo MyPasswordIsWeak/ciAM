@@ -9,6 +9,7 @@
 #define __FS_H__
 
 #include <dirent.h>
+#include "libs.h"
 
 char *get_item_in_dir(char *directory, int number);
 FS_MediaType getTitleDestination(u64 titleId);
