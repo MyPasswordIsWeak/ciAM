@@ -11,29 +11,18 @@
 int main(int argc, char* argv[])
 {
 
-	int loopControl = init_services();
+	int loop = init_services();
+	int choice = 0;
 
-	if(loopControl == -1)
-		return -1;
+	if(loop != 0)
+		return loop;
 
-	print_usage();
-
-	int total = list_diritems(CIA_DIR);
-	// = total + (Usage + offset)
-	int line = total + 10;
-	int selected = 0;
-
-	if(line == -1)
-		return -1;
-
-	redraw_selected(line, selected);
+	loop = installer_menu();
+	return_to_navigator();
 
 	// Main loop
 	while(aptMainLoop())
 	{
-
-		if(loopControl == -1)
-			break;
 
 		gspWaitForVBlank();
 		gfxSwapBuffers();
@@ -41,66 +30,40 @@ int main(int argc, char* argv[])
 
 		u32 kDown = hidKeysDown();
 
-		// break in order to return to hbmenu
+		// break in order to return to installer menu
 		if(EXIT_KEYS)
 			break;
 
-		if(kDown & KEY_DOWN && selected < total) {
-			++selected;
-			redraw_selected(line, selected);
+		else if(loop != 0)
+			break;
+
+		else if(kDown & KEY_DOWN && choice < 1) {
+			++choice;
+			draw_arrow(choice, choice - 1);
 		}
 
-		else if(kDown & KEY_UP && selected > 1) {
-			--selected;
-			redraw_selected(line, selected);
+		else if(kDown & KEY_UP && choice > 0) {
+			--choice;
+			draw_arrow(choice, choice + 1);
 		}
 
-		else if((kDown & KEY_R) && (kDown & KEY_A)) {
-
-			formatted_print(format("Installing all files from %s", CIA_DIR), 0, 29);
-			DIR *cias = opendir(CIA_DIR);
-			struct dirent *item;
-
-			while((item = readdir(cias))) {
-
-				char filePath[(sizeof(char) * 128)  + (sizeof(char) * sizeof(CIA_DIR))] = CIA_DIR;
-
-				strcat(filePath, item->d_name);
-				debug(format("Installing file: %s", filePath));
-
-				install_cia(filePath, line, 0);
-				clean_screen();
-				redraw_selected(line, selected);
-
+		else if(kDown & KEY_A) {
+			// Return to installer menu
+			switch(choice) {
+				case 0:
+					loop = installer_menu();
+					return_to_navigator();
+					break;
+				case 1:
+					break;
 			}
-			closedir(cias);
 		}
-
-		else if(kDown & KEY_A && selected != 0) {
-
-			char filePath[(sizeof(char) * 128)  + sizeof(char) * sizeof(CIA_DIR)] = CIA_DIR;
-
-			strcat(filePath, get_item_in_dir(CIA_DIR, selected - 1));
-			debug(format("Installing file: %s", filePath));
-
-			install_cia(filePath, line, 1);
-			clean_screen();
-			redraw_selected(line, selected);
-
-		}
-
 	}
 
 	exit_services();
-	return loopControl;
+	return loop;
 
 }
-
-void redraw_selected(int line, int selected)
-{
-	printf("\x1b[%i;0HSelected file: %i\n", line, selected);
-}
-
 
 int init_services(void)
 {
@@ -131,11 +94,31 @@ int init_services(void)
 
 }
 
-
 void exit_services(void)
 {
-
 	gfxExit();
 	amExit();
+}
 
+void print_functions(void)
+{
+	formatted_print(" Cia installer", 0, 4);
+	formatted_print(" Uninstaller", 0, 5);
+}
+
+void draw_arrow(int choice, int previous)
+{
+	formatted_print(" ", 0, previous + 4);
+	formatted_print(">", 0, choice + 4);
+}
+
+void return_to_navigator(void)
+{
+	consoleClear();
+	move_cursor(0, 0);
+
+	formatted_print("Choose an action with [A]", 0, 2);
+	print_functions();
+
+	draw_arrow(0, 0);
 }

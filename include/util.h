@@ -13,6 +13,7 @@
 char *format(char *base, const void *appendum);
 void formatted_print(char *text, int x, int y);
 void print_error(char *message, Result error);
+void redraw_selected(int line, int selected);
 void move_cursor(int x, int y);
 void debug(char *message);
 void clean_screen(void);

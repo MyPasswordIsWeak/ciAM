@@ -8,16 +8,7 @@
 #include "libs.h"
 #include "fs.h"
 
-/*
- * Example res:
- *  1) SomeFile.cia
- *	2) SomeSecondFile.cia
- * Params:
- *	*directory	- The directory to read
- * Returns:
- * -1 - failed
- *  * - Amount of files in directory
- */
+
 int list_diritems(char *directory)
 {
 

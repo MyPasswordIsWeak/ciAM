@@ -88,3 +88,8 @@ void remove_pause(void)
 {
 	formatted_print("                                    ", 7, 26);
 }
+
+void redraw_selected(int line, int selected)
+{
+	printf("\x1b[%i;0HSelected file: %i\n", line, selected);
+}

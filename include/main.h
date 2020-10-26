@@ -11,7 +11,9 @@
 #include "libs.h"
 #include "fs.h"
 
-void redraw_selected(int line, int selected);
+void draw_arrow(int choice, int previous);
+void return_to_navigator(void);
+void print_functions(void);
 void exit_services(void);
 int init_services(void);
 
