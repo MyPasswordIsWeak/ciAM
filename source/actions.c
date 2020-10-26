@@ -95,7 +95,7 @@ int uninstaller_menu(void)
 	Result res;
 
 	res = AM_GetTitleCount(MEDIATYPE_SD, &tidcount);
-	
+
 	if(R_FAILED(res)) {
 		print_error("Failed getting total titles count", res);
 		pause_3ds();
@@ -111,8 +111,15 @@ int uninstaller_menu(void)
 		return 0;
 	}
 
-	for(int i = 0; i < ; ++i)
-		printf("%llx\n", tids[i]);
+	int pageSize = 26 < tidcount
+		? 26
+		: tidcount;
+	int possiblePages = tidcount / pageSize;
+	int currentOffset = 0;
+
+	printf("\x1b[0;0HPossible pages: %i\n", possiblePages);
+	for(int i = currentOffset; i < pageSize; ++i)
+		printf("\x1b[%i;0H%llx\n", i + 3, tids[i]);
 
 	while(aptMainLoop()) {
 
@@ -124,6 +131,22 @@ int uninstaller_menu(void)
 
 		if(EXIT_KEYS)
 			break;
+
+		if(kDown & KEY_RIGHT) {
+			consoleClear();
+			currentOffset += pageSize;
+			printf("\x1b[0;0HPossible pages: %i", possiblePages);
+			for(int i = currentOffset; i < pageSize + currentOffset; ++i)
+				printf("\x1b[%i;0H%llx\n", i + 3, tids[i]);
+		}
+
+		if(kDown & KEY_LEFT) {
+			consoleClear();
+			currentOffset -= pageSize;
+			printf("\x1b[0;0HPossible pages: %i", possiblePages);
+			for(int i = currentOffset; i < pageSize + currentOffset; ++i)
+				printf("\x1b[%i;0H%llx\n", i + 3, tids[i]);
+		}
 
 	}
 
