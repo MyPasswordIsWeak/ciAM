@@ -132,7 +132,8 @@ int uninstaller_menu(void)
 		if(EXIT_KEYS)
 			break;
 
-		if(kDown & KEY_RIGHT) {
+		//								current page		total possible
+		if(kDown & KEY_RIGHT && (currentOffset / pageSize) < possiblePages ) {
 			consoleClear();
 			currentOffset += pageSize;
 			printf("\x1b[0;0HPossible pages: %i", possiblePages);
@@ -140,7 +141,8 @@ int uninstaller_menu(void)
 				printf("\x1b[%i;0H%llx\n", i + 3, tids[i]);
 		}
 
-		if(kDown & KEY_LEFT) {
+		//								current page
+		if(kDown & KEY_LEFT && (currentOffset / pageSize) > 0) {
 			consoleClear();
 			currentOffset -= pageSize;
 			printf("\x1b[0;0HPossible pages: %i", possiblePages);
