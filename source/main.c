@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
 	if(loop != 0)
 		return loop;
 
-	loop = installer_menu();
+	loop = AUTOBOOT();
 	return_to_navigator();
 
 	// Main loop

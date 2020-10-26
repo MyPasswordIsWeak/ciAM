@@ -29,3 +29,4 @@ You might want to change a few values in include/libs.h:
 |VERSION|The version, this will change the number shown in the start menu|
 |CIA_DIR|The folder to look for cias in, / is the root just like DEBUG_FILE|
 |WANTS_DEBUG|Comment this out if you don't want to create log files (// to comment)|
+|AUTOBOOT|The function to autoboot, all menu functions are easy to find in actions.h|
