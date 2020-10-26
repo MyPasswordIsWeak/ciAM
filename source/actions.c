@@ -91,7 +91,6 @@ int batch_installer_menu(void)
 
 int uninstaller_menu(void)
 {
-	u32 titlesReadCount;
 	u32 tidcount;
 	Result res;
 
@@ -104,19 +103,30 @@ int uninstaller_menu(void)
 	}
 
 	u64 *tids = calloc(tidcount, sizeof(u64));
-	res = AM_GetTitleList(&titlesReadCount, MEDIATYPE_SD, titlesReadCount, tids);
+	res = AM_GetTitleList(&tidcount, MEDIATYPE_SD, tidcount, tids);
 
 	if(R_FAILED(res)) {
-		print_error("Failed titles", res);
+		print_error("Failed to get titles", res);
 		pause_3ds();
 		return 0;
 	}
 
-	printf("Read %lu titles\n", titlesReadCount);
-	for(int i = 0; i < tidcount; ++i)
-		printf("tids[%i]: %016llX\n", i, tids[i]);
+	for(int i = 0; i < ; ++i)
+		printf("%llx\n", tids[i]);
 
-	while(true);
+	while(aptMainLoop()) {
 
+		gspWaitForVBlank();
+		gfxSwapBuffers();
+		hidScanInput();
+
+		u32 kDown = hidKeysDown();
+
+		if(EXIT_KEYS)
+			break;
+
+	}
+
+	free(tids);
 	return 0;
 }

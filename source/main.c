@@ -31,10 +31,7 @@ int main(int argc, char* argv[])
 		u32 kDown = hidKeysDown();
 
 		// break in order to return to installer menu
-		if(EXIT_KEYS)
-			break;
-
-		else if(loop != 0)
+		if(EXIT_KEYS || loop != 0)
 			break;
 
 		else if(kDown & KEY_DOWN && choice < 1) {
@@ -52,13 +49,13 @@ int main(int argc, char* argv[])
 			switch(choice) {
 				case 0:
 					loop = installer_menu();
-					return_to_navigator();
 					break;
 				case 1:
 					loop = uninstaller_menu();
-					return_to_navigator();
 					break;
 			}
+			return_to_navigator();
+			choice = 0;
 		}
 	}
 
