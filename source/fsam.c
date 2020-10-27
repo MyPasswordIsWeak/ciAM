@@ -76,7 +76,7 @@ int create_file_handle_read(char *path, Handle *handle)
 
 // https://github.com/Universal-Team/Universal-Updater/blob/master/source/utils/cia.cpp#L67
 // Thanks for showing how2install cias
-int install_cia(char *path, int line, u8 ask)
+int install_cia(char *path, int line, bool ask)
 {
 
 	line = line + 2;
@@ -104,7 +104,7 @@ int install_cia(char *path, int line, u8 ask)
 	printf("\x1b[%i;0HVersion: %i", line + 1, title.version);
 	printf("\x1b[%i;0HSize: %.2fMiB", line + 2, title.size / pow(1024, 2));
 
-	if(ask == 1) {
+	if(ask) {
 		formatted_print("Press [B] to cancel or [A] to continue ...", 4, 26);
 		while(aptMainLoop()) {
 			hidScanInput();
@@ -118,7 +118,7 @@ int install_cia(char *path, int line, u8 ask)
 	}
 
 	// Real stuff starts here
-	media = getTitleDestination(title.titleID);
+	media = get_title_location(title.titleID);
 
 	// For you Timm, since you hate commas
 	u32 written;
@@ -191,7 +191,7 @@ int install_cia(char *path, int line, u8 ask)
 
 // https://github.com/Universal-Team/Universal-Updater/blob/master/source/utils/cia.cpp#L55
 // Fucking bitwise
-FS_MediaType getTitleDestination(u64 titleId)
+FS_MediaType get_title_location(u64 titleId)
 {
 
 	u16 platform = (u16) ((titleId >> 48) & 0xFFFF);

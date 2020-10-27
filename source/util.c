@@ -15,8 +15,6 @@ void formatted_print(char *text, int x, int y)
 
 void pause_3ds(void)
 {
-
-	// Middle-ish
 	formatted_print("Press [START] or [B] to continue ...", 7, 26);
 	while(aptMainLoop()) {
 
@@ -30,7 +28,6 @@ void pause_3ds(void)
 			break;
 
 	}
-
 }
 
 void move_cursor(int x, int y)

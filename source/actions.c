@@ -56,7 +56,7 @@ int installer_menu(void)
 
 			strcat(filePath, get_item_in_dir(CIA_DIR, selected - 1));
 
-			install_cia(filePath, line, 1);
+			install_cia(filePath, line, true);
 			clean_screen();
 			redraw_selected(line, selected);
 
@@ -100,6 +100,10 @@ int uninstaller_menu(void)
 		return 0;
 	}
 
+	// Imagine trying on Citra LMZO
+	if(tidcount == 0)
+		return 0;
+
 	u64 *tids = calloc(tidcount, sizeof(u64));
 	res = AM_GetTitleList(&tidcount, MEDIATYPE_SD, tidcount, tids);
 
@@ -117,7 +121,7 @@ int uninstaller_menu(void)
 	int offset = 0;
 
 	draw_page(offset, pageSize, tidcount, tids);
-	if(tidcount != 0) printf("\x1b[%i;0H>\n", vAlign + 3);
+	printf("\x1b[%i;0H>\n", vAlign + 3);
 
 	while(aptMainLoop()) {
 
@@ -130,16 +134,16 @@ int uninstaller_menu(void)
 		if(EXIT_KEYS)
 			break;
 
-		//							current page
-		if(kDown & KEY_RIGHT && (offset / pageSize) < possiblePages) {
+		//													current page
+		if(kDown & KEY_RIGHT && possiblePages != 0 && (offset / pageSize) < possiblePages) {
 			offset += pageSize;
 			draw_page(offset, pageSize, tidcount, tids);
 			vAlign = 0;
 			printf("\x1b[%i;0H>\n", vAlign + 3);
 		}
 
-		//							current page
-		else if(kDown & KEY_LEFT && (offset / pageSize) > 0) {
+		//													current page
+		else if(kDown & KEY_LEFT && possiblePages != 0  && (offset / pageSize) > 0) {
 			offset -= pageSize;
 			draw_page(offset, pageSize, tidcount, tids);
 			vAlign = 0;
@@ -160,10 +164,46 @@ int uninstaller_menu(void)
 		}
 
 		else if(kDown & KEY_A) {
+			bool deltik = true;
 			formatted_print("Are you sure you", 25, 5);
 			formatted_print("Want to delete", 25, 6);
-			formatted_print(format("%016llx", &tids[offset + vAlign]), 25, 7);
-			formatted_print("Press [A] to continue", 25, 8);
+			printf("\x1b[7;25H%016llx?", tids[offset + vAlign]);
+			formatted_print("[A] Complete removal", 25, 8);
+			formatted_print("[X] Delete title", 25, 9);
+			formatted_print("[B] Return", 25, 10);
+			while(aptMainLoop()) {
+				gspWaitForVBlank();
+				gfxSwapBuffers();
+				hidScanInput();
+				u32 kDown = hidKeysDown();
+				if(kDown & KEY_A)
+					break;
+				else if(kDown & KEY_X) {
+					deltik = false;
+					break;
+				}
+				if(EXIT_KEYS)
+					return 0;
+			}
+
+			formatted_print("Deleting ...", 25, 12);
+			res = AM_DeleteTitle(get_title_location(tids[offset + vAlign]), tids[offset + vAlign]);
+			if(R_FAILED(res)) {
+				print_error("Failed to delete title", res);
+				pause_3ds();
+				return 0;
+			}
+
+			if(deltik) {
+				res = AM_DeleteTicket(tids[offset + vAlign]);
+				if(R_FAILED(res)) {
+					print_error("Failed to delete title", res);
+					pause_3ds();
+					return 0;
+				}
+			}
+
+			break;
 		}
 
 	}
