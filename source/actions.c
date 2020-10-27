@@ -197,7 +197,7 @@ int uninstaller_menu(void)
 			if(deltik) {
 				res = AM_DeleteTicket(tids[offset + vAlign]);
 				if(R_FAILED(res)) {
-					print_error("Failed to delete title", res);
+					print_error("Failed to delete ticket", res);
 					pause_3ds();
 					return 0;
 				}
