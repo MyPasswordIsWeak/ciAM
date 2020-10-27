@@ -55,7 +55,6 @@ int installer_menu(void)
 			char filePath[(sizeof(char) * 128)  + sizeof(char) * sizeof(CIA_DIR)] = CIA_DIR;
 
 			strcat(filePath, get_item_in_dir(CIA_DIR, selected - 1));
-			debug(format("Installing file: %s", filePath));
 
 			install_cia(filePath, line, 1);
 			clean_screen();
@@ -78,7 +77,6 @@ int batch_installer_menu(void)
 	// 	char filePath[(sizeof(char) * 128)  + (sizeof(char) * sizeof(CIA_DIR))] = CIA_DIR;
 
 	// 	strcat(filePath, item->d_name);
-	// 	debug(format("Installing file: %s", filePath));
 
 	// 	install_cia(filePath, line, 0);
 	// 	clean_screen();
@@ -137,6 +135,7 @@ int uninstaller_menu(void)
 			offset += pageSize;
 			draw_page(offset, pageSize, tidcount, tids);
 			verall = 0;
+			printf("\x1b[%i;0H>\n", verall + 3);
 		}
 
 		//							current page
@@ -144,15 +143,16 @@ int uninstaller_menu(void)
 			offset -= pageSize;
 			draw_page(offset, pageSize, tidcount, tids);
 			verall = 0;
+			printf("\x1b[%i;0H>\n", verall + 3);
 		}
 
-		else if(kDown & KEY_DOWN && verall < abs((offset * (offset / pageSize)) - tidcount)) {
+		else if(kDown & KEY_DOWN && verall < abs(offset - tidcount)) {
 			++verall;
 			printf("\x1b[%i;0H \n", verall + 2);
 			printf("\x1b[%i;0H>\n", verall + 3);
 		}
 
-		else if(kDown & KEY_DOWN && verall > 0) {
+		else if(kDown & KEY_UP && verall > 0) {
 			--verall;
 			printf("\x1b[%i;0H \n", verall + 4);
 			printf("\x1b[%i;0H>\n", verall + 3);
@@ -169,7 +169,7 @@ void draw_page(int offset, int pageSize, u32 tidcount, u64 *tids)
 	consoleClear();
 	for(int i = offset; i < pageSize + offset; ++i) {
 		if(i < tidcount)
-			printf("\x1b[%i;0H %llx\n", offset - i + 3, tids[i]);
+			printf("\x1b[%i;0H %llx\n", i - offset + 3, tids[i]);
 		else
 			break;
 	}

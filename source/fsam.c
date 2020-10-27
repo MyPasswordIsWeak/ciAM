@@ -152,7 +152,6 @@ int install_cia(char *path, int line, u8 ask)
 		return -1;
 	}
 
-	debug("Starting cia install with total install");
 	printf("\x1b[29;0HPercent: 0%% (0MiB/unk)");
 
 	do {

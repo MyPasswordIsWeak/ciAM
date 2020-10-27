@@ -33,17 +33,6 @@ void pause_3ds(void)
 
 }
 
-void debug(char *message)
-{
-	// WANTS_DEBUG --> libs.h
-	#ifdef WANTS_DEBUG
-	FILE *fd = fopen(DEBUG_FILE, "a");
-
-	fprintf(fd, "debug: %s\n", message);
-	fclose(fd);
-	#endif
-}
-
 void move_cursor(int x, int y)
 {
 	printf("\x1b[%i;%iH\n", y, x);
@@ -59,7 +48,6 @@ void print_error(char *message, Result error)
 {
 	printf("\x1b[28;0H%s", message);
 	printf("\x1b[29;0H%08lX\n", error);
-	debug(format("Error: %08lX", &error));
 }
 
 void clean_screen(void)
