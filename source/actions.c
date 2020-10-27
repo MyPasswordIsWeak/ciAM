@@ -116,8 +116,10 @@ int uninstaller_menu(void)
 		: tidcount;
 	int possiblePages = tidcount / pageSize;
 	int offset = 0;
+	int verall = 0;
 
 	draw_page(offset, pageSize, tidcount, tids);
+	if(tidcount != 0) printf("\x1b[%i;0H>\n", verall + 3);
 
 	while(aptMainLoop()) {
 
@@ -130,16 +132,30 @@ int uninstaller_menu(void)
 		if(EXIT_KEYS)
 			break;
 
-		//								current page		total possible
-		if(kDown & KEY_RIGHT && (offset / pageSize) < possiblePages ) {
+		//							current page
+		if(kDown & KEY_RIGHT && (offset / pageSize) < possiblePages) {
 			offset += pageSize;
 			draw_page(offset, pageSize, tidcount, tids);
+			verall = 0;
 		}
 
-		//								current page
-		if(kDown & KEY_LEFT && (offset / pageSize) > 0) {
+		//							current page
+		else if(kDown & KEY_LEFT && (offset / pageSize) > 0) {
 			offset -= pageSize;
 			draw_page(offset, pageSize, tidcount, tids);
+			verall = 0;
+		}
+
+		else if(kDown & KEY_DOWN && verall < abs((offset * (offset / pageSize)) - tidcount)) {
+			++verall;
+			printf("\x1b[%i;0H \n", verall + 2);
+			printf("\x1b[%i;0H>\n", verall + 3);
+		}
+
+		else if(kDown & KEY_DOWN && verall > 0) {
+			--verall;
+			printf("\x1b[%i;0H \n", verall + 4);
+			printf("\x1b[%i;0H>\n", verall + 3);
 		}
 
 	}
@@ -153,7 +169,7 @@ void draw_page(int offset, int pageSize, u32 tidcount, u64 *tids)
 	consoleClear();
 	for(int i = offset; i < pageSize + offset; ++i) {
 		if(i < tidcount)
-			printf("\x1b[%i;0H%llx\n", i + 3 - offset, tids[i]);
+			printf("\x1b[%i;0H %llx\n", offset - i + 3, tids[i]);
 		else
 			break;
 	}
