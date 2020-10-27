@@ -146,7 +146,8 @@ int uninstaller_menu(void)
 			printf("\x1b[%i;0H>\n", verall + 3);
 		}
 
-		else if(kDown & KEY_DOWN && verall < abs(offset - tidcount)) {
+		//										current page
+		else if(kDown & KEY_DOWN && verall < ((offset / pageSize) == possiblePages ? (tidcount % 25) - 2 : 25)) {
 			++verall;
 			printf("\x1b[%i;0H \n", verall + 2);
 			printf("\x1b[%i;0H>\n", verall + 3);
