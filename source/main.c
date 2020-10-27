@@ -101,8 +101,8 @@ void exit_services(void)
 
 void print_functions(void)
 {
-	formatted_print(" Cia installer", 0, 4);
-	formatted_print(" Uninstaller", 0, 5);
+	formatted_print("Cia installer", 2, 4);
+	formatted_print("Uninstaller", 2, 5);
 }
 
 void draw_arrow(int choice, int previous)
