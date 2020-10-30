@@ -150,8 +150,8 @@ int uninstaller_menu(void)
 			printf("\x1b[%i;0H>\n", vAlign + 3);
 		}
 
-		//										current page
-		else if(kDown & KEY_DOWN && vAlign < ((offset / pageSize) == possiblePages ? (tidcount % 25) - 2 : 25)) {
+		//											Max abs offset		Absolute offset
+		else if(kDown & KEY_DOWN && (vAlign < 25 && (tidcount - 1) - (offset + vAlign) > 0)) {
 			++vAlign;
 			printf("\x1b[%i;0H \n", vAlign + 2);
 			printf("\x1b[%i;0H>\n", vAlign + 3);
