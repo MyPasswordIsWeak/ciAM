@@ -161,6 +161,16 @@ int install_cia(char *path, int line, bool ask)
 		FSFILE_Write(cia, &written, offset, buffer, INSTALL_BUFFER_SIZE, FS_WRITE_FLUSH);
 		offset += read;
 
+		hidScanInput();
+		u32 kDown = hidKeysDown();
+		if(EXIT_KEYS) {
+			AM_CancelCIAInstall(cia);
+			printf("\x1b[29;0H                                        ");
+			printf("\x1b[29;0HCancelled cia installation");
+			pause_3ds();
+			return 0;
+		}
+
 		// idk whai this worcc
 		printf("\x1b[29;0HInstalling: %.2f%% (%llu/%llu)", ((float)offset / size * 100), offset / (u64)pow(1024, 2), size / (u64)pow(1024, 2));
 
