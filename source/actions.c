@@ -91,20 +91,32 @@ int batch_installer_menu(void)
 
 int uninstaller_menu(void)
 {
-	u32 tidcount = 0;
-	u64 *titleIds = malloc(1);
-	AM_TitleEntry *entries = malloc(1);
 
-	load_titles(MEDIATYPE_SD, &tidcount, titleIds, entries);
+	u32 tidcount = 0;
+
+	Result res = AM_GetTitleCount(MEDIATYPE_SD, &tidcount);
+	if (R_FAILED(res))
+	{
+		print_error("Failed to get title count.", res);
+		pause_3ds();
+		return -1;
+	}
+
+	AM_TitleEntry *entries = calloc(tidcount, sizeof(AM_TitleEntry));
+	u64 *titleIds = calloc(tidcount, sizeof(u64));
+
+	res = load_titles(MEDIATYPE_SD, &tidcount, titleIds, entries);
+	if(res != 0)
+		return res;
 
 	u32 pageSize = (tidcount > 26) ? 26 : tidcount;
 	u32 possiblePages = tidcount / pageSize;
 	u32 vAlign = 0;
 	u32 offset = 0;
-	
-	printf("\x1b[%lu;0H>\n", vAlign + 3);
+
 
 	draw_page(offset, pageSize, tidcount, entries);	
+	printf("\x1b[%lu;0H>\n", vAlign + 3);
 
 	while (aptMainLoop())
 	{
@@ -161,8 +173,8 @@ int uninstaller_menu(void)
 				formatted_print("                          " , 24, 3);
 				formatted_print(" ========================= " ,24, 4);
 				formatted_print(" | Do you want to delete | ", 24, 5);
-				printf("\x1b[6;24H | %016llX      | ", titleIds[offset + vAlign]);
-				printf("\x1b[7;24H | (%s)?         | ", productCode);
+				printf("\x1b[6;26H| %016llX      | ", titleIds[offset + vAlign]);
+				printf("\x1b[7;26H| (%s)?         | ", productCode);
 				formatted_print(" | [A] Complete removal  | ", 24, 8);
 				formatted_print(" | [X] Delete title      | ", 24, 9);
 				formatted_print(" | [B] Return            | ", 24, 10);
@@ -204,36 +216,33 @@ int uninstaller_menu(void)
 		}
 	}
 
-	free(entries);
 	free(titleIds);
+	free(entries);
 	return 0;
 }
 
 void draw_page(int offset, int pageSize, u32 tidcount, AM_TitleEntry *entries)
 {
 	consoleClear();
-	char *productCode = calloc(16 + 1, sizeof(char));
+	char productCode[17];
 
-	for (int i = offset; i < pageSize + offset; ++i)
+	for (int i = offset; i < pageSize + offset && i < tidcount; ++i)
 	{
 
 		Result res = AM_GetTitleProductCode(MEDIATYPE_SD, entries[i].titleID, productCode);
 
 		if (R_FAILED(res))
 		{
-			print_error("Failed to get product code for title - ", res);
+			print_error("Failed to get product code for title.", res);
+			return;
 		}
 
-		if (i < tidcount)
-			printf("\x1b[%i;0H  %016llx|%6.1fM|%s\n", i - offset + 3, entries[i].titleID, (float)entries[i].size / 1024 / 1024, productCode);
-		else
-			break;
-	}
+		printf("\x1b[%i;0H  %016llx|%6.1fM|%s\n", i - offset + 3, entries[i].titleID, (float)entries[i].size / 1024 / 1024, productCode);
 
-	free(productCode);
+	}
 }
 
-int delete_title (bool deleteticket, u64 titleid) 
+int delete_title(bool deleteticket, u64 titleid) 
 {
 	formatted_print("Deleting ...", 25, 12);
 	Result res;
@@ -262,47 +271,20 @@ int delete_title (bool deleteticket, u64 titleid)
 	return 0;
 }
 
-int load_titles(FS_MediaType mediaType, u32 *titleCount, u64 *titleIds, AM_TitleEntry *titleEntries)
+int load_titles(FS_MediaType mediaType, u32 *tidsc, u64 *titleIds, AM_TitleEntry *titleEntries)
 {
 	Result res;
-	u64 *tids;
-	AM_TitleEntry *entries;
 
-	//Get Title Count
-	res = AM_GetTitleCount(mediaType, titleCount);
-
-	if (R_FAILED(res))
+	// Imagine trying on Citra LMZO
+	if (*tidsc == 0)
 	{
-		print_error("Failed to get title count.", res);
+		printf("No titles found.");
 		pause_3ds();
 		return -1;
 	}
 
-	// Imagine trying on Citra LMZO
-	if (*titleCount == 0)
-	{
-		printf("No titles found.");
-		return -1;
-	}
-
-	tids = calloc(*titleCount, sizeof(u64));
-
-	if (tids == NULL)
-	{
-		printf("Out of memory. Tried to allocate memory for title ids.");
-		return -1;
-	}
-
-	entries = calloc(*titleCount, sizeof(AM_TitleEntry));
-
-	if (tids == NULL)
-	{
-		printf("Out of memory. Tried to allocate memory for title ids.");
-		return -1;
-	}
-
-	//Get Title IDs
-	res = AM_GetTitleList(titleCount, mediaType, *titleCount, tids);
+	// Get Title IDs
+	res = AM_GetTitleList(tidsc, mediaType, *tidsc, titleIds);
 
 	if (R_FAILED(res))
 	{
@@ -311,7 +293,7 @@ int load_titles(FS_MediaType mediaType, u32 *titleCount, u64 *titleIds, AM_Title
 		return -1;
 	}
 
-	res = AM_GetTitleInfo(mediaType, *titleCount, tids, entries);
+	res = AM_GetTitleInfo(mediaType, *tidsc, titleIds, titleEntries);
 
 	if (R_FAILED(res))
 	{
@@ -319,9 +301,6 @@ int load_titles(FS_MediaType mediaType, u32 *titleCount, u64 *titleIds, AM_Title
 		pause_3ds();
 		return -1;
 	}
-
-	titleIds = tids;
-	titleEntries = entries;
 
 	return 0;
 }
