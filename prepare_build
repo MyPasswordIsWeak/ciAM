@@ -73,7 +73,6 @@ while [ true ]; do
 	fi
 
 	PREV="$ACTION"
-	make clean
 
 	echo "------------------------------------"
 	echo "Press any key to continue."

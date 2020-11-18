@@ -10,7 +10,10 @@
 
 #include "libs.h"
 
-void draw_page(int offset, int pageSize, u32 tidcount, u64 *tids);
+
+int load_titles(FS_MediaType mediaType, u32 *tidsc, u64 *titleIds, AM_TitleEntry *titleEntries);
+void draw_page(int offset, int pageSize, u32 tidcount, AM_TitleEntry *entries);
+int delete_title(bool deleteticket, u64 titleid);
 int uninstaller_menu(void);
 int installer_menu(void);
 

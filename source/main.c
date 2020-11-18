@@ -17,7 +17,6 @@ int main(int argc, char* argv[])
 	if(loop != 0)
 		return loop;
 
-	loop = AUTOBOOT();
 	return_to_navigator();
 
 	// Main loop
